@@ -1,16 +1,17 @@
 package com.example.tipandsplit
 
 import android.animation.ArgbEvaluator
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.SeekBar
+import android.widget.TextView
 import androidx.core.content.ContextCompat
-import kotlinx.android.synthetic.*
+import com.example.tipandsplit.R.string
 import kotlinx.android.synthetic.main.activity_main.*
 
 private const val TAG = "MainActivity"
@@ -22,12 +23,24 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val button = findViewById<Button>(R.id.button)
+        val base = findViewById<TextView>(R.id.etBase)
+        val no = findViewById<TextView>(R.id.etNo)
+        button.setOnClickListener {
+            base.text = ""
+            tvTipAmount.text = ""
+            tvTotalAmount.text = ""
+            no.text = ""
+            tvFinal.text = ""
+        }
+
+
         seekBarTip.progress = INITIAL_TIP_PERCENT
         tvTipPercent.text = "$INITIAL_TIP_PERCENT%"
         updateTipDescription(INITIAL_TIP_PERCENT)
-        seekBarTip.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
+        seekBarTip.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                Log.i(TAG, "onProgressChanged $progress" )
+                Log.i(TAG, "onProgressChanged $progress")
                 tvTipPercent.text = "$progress%"
                 updateTipDescription(progress)
                 computeTipAndTotal()
@@ -74,16 +87,16 @@ class MainActivity : AppCompatActivity() {
         }
         tvTipDescription.text = tipDescription
         val color = ArgbEvaluator().evaluate(
-                tipPercent.toFloat() / seekBarTip.max,
-                ContextCompat.getColor(this, R.color.colorWorstTip),
-                ContextCompat.getColor(this, R.color.colorBestTip)
+            tipPercent.toFloat() / seekBarTip.max,
+            ContextCompat.getColor(this, R.color.colorWorstTip),
+            ContextCompat.getColor(this, R.color.colorBestTip)
         ) as Int
         tvTipDescription.setTextColor(color)
     }
 
     private fun computeTipAndTotal() {
         // Get the value of the base and tip percent
-        if (etBase.text.isEmpty()){
+        if (etBase.text.isEmpty()) {
             tvTipAmount.text = ""
             tvTotalAmount.text = ""
             return
@@ -95,11 +108,12 @@ class MainActivity : AppCompatActivity() {
         tvTipAmount.text = "%.2f".format(tipAmount)
         tvTotalAmount.text = "%.2f".format(totalAmount)
     }
+
     val pay: Double
         get() = tvTotalAmount.text.toString().toDouble()
 
     private fun computeTotal() {
-        if (etNo.text.isEmpty()){
+        if (etNo.text.isEmpty()) {
             tvFinal.text = ""
             return
         }
@@ -109,3 +123,5 @@ class MainActivity : AppCompatActivity() {
     }
 
 }
+
+
